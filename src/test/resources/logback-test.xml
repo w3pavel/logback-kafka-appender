@@ -1,0 +1,44 @@
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <target>System.out</target>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <property name="appName" value="logback-kafka-appender"/>
+    <contextName>${appName}</contextName>
+
+    <appender name="KAFKA" class="io.coor.logger.logback.KafkaAppender">
+        <encoder class="io.coor.logger.logback.encoder.PatternJsonLayoutEncoder">
+            <pattern>
+                <![CDATA[
+                    {
+                        "timestamp":"%d{yyyy-MM-dd HH:mm:ss.SSS}",
+                        "app":"%cn",
+                        "thread":"%thread",
+                        "level":"%level",
+                        "logger":"%logger",
+                        "message":"%msg"
+                    }
+                ]]>
+            </pattern>
+        </encoder>
+        <!-- kafka product configuration-->
+        <kafkaProduct>
+            <!-- target kafka topic -->
+            <topic>test</topic>
+            <!-- kafka product record key generator strategy-->
+            <keyingStrategy class="io.coor.logger.logback.kafka.ContextNameKeyingStrategy"/>
+            <!-- kafka product send message strategy see io.coor.logger.logback.kafka.AnsyncDeliveryStrategy or io.coor.logger.logback.kafka.SyncDeliveryStrategy-->
+            <deliveryStrategy class="io.coor.logger.logback.kafka.AnsyncDeliveryStrategy"/>
+            <!-- kafka product config map-->
+            <producerConfig>bootstrap.servers=localhost:9092</producerConfig>
+            <producerConfig>client.id=${appName}</producerConfig>
+        </kafkaProduct>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="KAFKA"/>
+    </root>
+</configuration>
