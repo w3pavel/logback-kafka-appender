@@ -13,7 +13,7 @@ public class PatternJsonLayoutEncoder extends PatternLayoutEncoderBase<ILoggingE
         this.setPattern(this.getPattern()
                 .replace("\n", "")
                 .replace("\r\n", "")
-                .replaceAll("^\\{ *\"", "\\{\"")
+                .replaceAll("^\\{ *\"", "\\{")
                 .replaceAll("\", *\"", "\",\"")
                 .replaceAll("\" *}$", "\"}"));
 
